@@ -43,21 +43,19 @@
       }
     },
     "myDNS": {
-            "Type": "AWS::Route53::RecordSetGroup",
-            "Properties": {
-                "HostedZoneName": "hello.is.",
-                "Comment": "Website A records",
-                "RecordSets": [
-                    {
-                        "Name": {"Ref": "WebsiteDomainName"},
-                        "Type": "A",
-                        "AliasTarget": {
-                            "HostedZoneId": {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "RegionName" }, "S3hostedzoneID"]},
-                            "DNSName": {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "RegionName" }, "websiteendpoint"]}
-                        }
-                    }
-                ]
-            }
+      "Type": "AWS::Route53::RecordSetGroup",
+      "Properties": {
+        "HostedZoneName": "hello.is.",
+        "Comment": "Website A records",
+        "RecordSets": [{
+          "Name": {"Ref": "WebsiteDomainName"},
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "RegionName" }, "S3hostedzoneID"]},
+            "DNSName": {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "RegionName" }, "websiteendpoint"]}
+          }
+        }]
+      }
+    }
   }
-}
 }
