@@ -29,7 +29,9 @@
       "ConstraintDescription" : "must be a valid DNS zone name."
     }
   },
-
+  "Conditions" : {
+      "RestrictIpAccess" : {"Fn::Equals" : [{"Ref" : "WebsiteDomainName"}, "staging-user.hello.is"]}
+  },
   "Resources" : {
     "S3BucketForWebsiteContent" : {
       "Type" : "AWS::S3::Bucket",
@@ -39,6 +41,29 @@
         "WebsiteConfiguration" : {
            "IndexDocument" : "index.html",
            "ErrorDocument" : "error.html"
+        }
+      }
+    },
+    "RestrictByIpBucketPolicy" : {
+      "Type" : "AWS::S3::BucketPolicy",
+      "Condition" : "RestrictIpAccess",
+      "Properties" : {
+        "Bucket" : {"Ref" : "WebsiteDomainName"},
+        "PolicyDocument": {
+          "Statement":[{
+            "Sid": "1",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "*"
+            },
+            "Action": "s3:GetObject",
+            "Resource": {"Fn::Join" : ["", ["arn:aws:s3:::", {"Ref" : "WebsiteDomainName"}, "/*"]]},
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": ["199.87.82.114/32"]
+              }
+            }
+          }]
         }
       }
     },
